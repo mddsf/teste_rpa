@@ -1,27 +1,27 @@
 *** Settings ***
 Library       SeleniumLibrary
 Library       String
-Library       Library.py
-Resource      elements.resource
+Library       ./../libs/Library.py
+Resource      ./../elements/elements.resource
 
 *** Keywords ***
 Abrir Navegador Maximizado
-    # Abre o novegador chrome e maximiza a janela do mesmo.
-    Log To Console  Abrindo navegador maximizado
+    [Documentation]  Abre o novegador chrome e maximiza a janela do mesmo.
+    Write Log  Robot: Abrindo navegador maximizado
     Open Browser    about:blank   chrome
     Maximize Browser Window
 
 Buscar IP Externo
-    # Navega para obter o ip externo, obtém e seta o mesmo como variável global
-    Log To Console  Buscando ip externo
+    [Documentation]  Navega para obter o ip externo, obtém e seta o mesmo como variável global
+    Write Log  Robot: Buscando ip externo
     Go To    https://www.whatismyip.com/
     Wait Until Element Is Visible  ${myip.ipv4}
     ${ip}=  Get Text    ${myip.ipv4}
     Set Global Variable      ${ip}
 
 Nome da Nova Chave
-    # Incrementar o contador da chave, ex: key1 -> key2
-    Log To Console  Gerando novo nome para chave
+    [Documentation]  Incrementar o contador da chave, ex: key1 -> key2
+    Write Log  Robot: Gerando novo nome para chave
     ${count}=       Get Element Count    ${clash.item_key}
     ${key_name}=    Set Variable    key1
     IF  ${count} > 0
@@ -34,17 +34,17 @@ Nome da Nova Chave
     [Return]    ${key_name}
 
 Ir Para Minha Conta
-    # Navegar para "My Account"
-    Log To Console  Navegando para "Minha Conta"
+    [Documentation]  Navegar para "My Account"
+    Write Log  Robot: Navegando para "Minha Conta"
     Wait Until Element Is Visible   ${clash.menu_account}
     Click Element                   ${clash.dropdown_menu_account}
     Click Element                   ${clash.my_account}
     Wait Until Element Is Visible   ${clash.list_keys}
 
 Criar Chave
-    # Cria uma nova chave
+    [Documentation]  Cria uma nova chave
     Ir Para Minha Conta
-    Log To Console  Criando Nova Chave
+    Write Log  Robot: Criando Nova Chave
     ${key_name}=    Nome da Nova Chave
     ${desc}=        Catenate        description of   ${key_name}
     Wait Until Element Is Visible   ${clash.btn_create_new_key}
@@ -55,8 +55,8 @@ Criar Chave
     Submit Form
 
 Login Clash Royale
-    # Navega para developer.clashroyale.com e realizar o login
-    Log To Console  Realizando Log In no site developer.clashroyale.com
+    [Documentation]  Navega para developer.clashroyale.com e realizar o login
+    Write Log  Robot: Realizando Log In no site developer.clashroyale.com
     [Arguments]     ${user_email}   ${user_psw}
     Go To    https://developer.clashroyale.com/
     Wait Until Element Is Visible   ${clash.cookie_consent}
@@ -69,9 +69,9 @@ Login Clash Royale
     Submit Form
 
 Buscar API Token
-    # Navega para "My Account" e pega o Token da última chave criada
+    [Documentation]  Navega para "My Account" e pega o Token da última chave criada
     Ir Para Minha Conta
-    Log To Console  Buscando Token para acessar API do clashroyale
+    Write Log  Robot: Buscando Token para acessar API do clashroyale
     ${count}=       Get Element Count    ${clash.item_key}
     IF  ${count} == 0
         Criar Chave
@@ -84,22 +84,22 @@ Buscar API Token
         Set Api Token           ${api_token}
         Click Element           ${clash.back_to_mykeys}
     ELSE
-        Log To Console          Nenhuma key disponível e não foi possível criar uma nova
+        Write Log   Robot: Nenhuma key disponível e não foi possível criar uma nova
     END
 
 Buscar Membros do Clan
-    # Busca clan, os integrantes do mesmo e então gera um arquivo com as informações básicas
+    [Documentation]  Busca clan, os integrantes do mesmo e então gera um arquivo com as informações básicas
     [Arguments]     ${name}      ${tag}
     ${full_tag}=    Run Keyword  Get Clan  ${name}  ${tag}
     IF  '${full_tag}' != 'None'
         Run Keyword      Get Members  ${full_tag}
     ELSE
-        Log To Console   Nenhum clan encontrado com os dados inseridos.
+        Write Log   Robot: Nenhum clan encontrado com os dados inseridos.
     END
     
 Sair e Fechar
-    # Efetua logout e fecha o navegador
-    Log To Console  Efetuando Log Out e fechando navegador.
+    [Documentation]  Efetua logout e fecha o navegador
+    Write Log  Robot: Efetuando Log Out e fechando navegador.
     Click Element   ${clash.dropdown_menu_account}
     Click Element   ${clash.logout}
     Close Browser

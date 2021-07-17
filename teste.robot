@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation     Teste Desenvolvedor RPA.
-Resource          keywords.robot
+Resource          ./keywords/keywords.robot
 
 *** Variables ***
 ${clan_name}    The resistance
